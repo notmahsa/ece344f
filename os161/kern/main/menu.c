@@ -366,7 +366,7 @@ showmenu(const char *name, const char *x[]) {
 }
 
 static const char *opsmenu[] = {
-    "[s]       Shell                     ",
+    "[s]       Shelol                     ",
     "[p]       Other program             ",
     "[dbflags] Debug flags               ",
     "[mount]   Mount a filesystem        ",
