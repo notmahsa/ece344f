@@ -537,10 +537,6 @@ thread_wakeup(const void *addr)
 	}
 }
 
-/*
- * Wake up one or more threads who are sleeping on "sleep address"
- * ADDR.
- */
 void
 single_thread_wakeup(const void *addr)
 {
@@ -567,7 +563,6 @@ single_thread_wakeup(const void *addr)
 			 */
 			result = make_runnable(t);
 			assert(result==0);
-                        return;
 		}
 	}
 }
