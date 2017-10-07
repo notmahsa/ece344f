@@ -1,0 +1,10 @@
+
+--This line, and those below, will be ignored--
+
+M    defs.mk
+M    kern/compile/ASST0/kernel
+M    kern/compile/ASST0/vers.c
+M    kern/compile/ASST0/version
+M    kern/main/menu.c
+M    kernelbuild.sh
+M    kernelstart.sh

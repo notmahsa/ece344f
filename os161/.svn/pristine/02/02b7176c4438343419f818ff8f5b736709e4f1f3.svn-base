@@ -1,0 +1,14 @@
+#!/bin/bash
+
+cd ~/fromMaggie/ece344/os161
+#./configure --ostree=$HOME/fromMaggie/ece344/root
+make
+cd ~/fromMaggie/ece344/os161
+cd kern/conf
+./config ASST0
+cd ~/fromMaggie/ece344/os161/kern
+cd compile/ASST0
+make depend
+make
+make install
+echo "KERNEL BUILD!!"
