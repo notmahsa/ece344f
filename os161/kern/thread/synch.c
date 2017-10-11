@@ -110,8 +110,8 @@ lock_create(const char *name) {
     }
 
     // add stuff here as needed
-    lock->addr = kmalloc(sizeof (void*));
-
+    lock->available = 1;
+    lock->thread = NULL;
     return lock;
 }
 
@@ -120,29 +120,41 @@ lock_destroy(struct lock *lock) {
     assert(lock != NULL);
 
     // add stuff here as needed
-    kfree(lock->addr);
+
     kfree(lock->name);
+    kfree(lock->thread);
     kfree(lock);
+
 }
 
 void
 lock_acquire(struct lock *lock) {
     // Write this
-
+    int spl;
     (void) lock; // suppress warning until code gets written
+    spl=splhigh();
+    while (lock->available !=1) {
+        thread_sleep(lock);
+    }
+
+   // assert(lock->available == 1);
+    lock->available = 0;
+    lock->thread = curthread;
+    splx(spl);
 }
 
 void
 lock_release(struct lock *lock) {
     // Write this
-    int spl;
+
     (void) lock; // suppress warning until code gets written
+    int spl;
     spl = splhigh();
     assert(lock != NULL);
     lock->available = 1;
     assert(lock->available == 1);
     lock->thread = NULL;
-    thread_wakeup((void*) lock);
+    thread_wakeup(lock);
     splx(spl);
 }
 
@@ -153,7 +165,11 @@ lock_do_i_hold(struct lock *lock) {
     (void) lock; // suppress warning until code gets written
 
     assert(lock != NULL);
-    lock->thread == curthread;
+
+    if (lock->thread == curthread) {
+        return 1;
+    }
+    return 0;
 }
 
 ////////////////////////////////////////////////////////////
@@ -175,20 +191,18 @@ cv_create(const char *name) {
         return NULL;
     }
 
-    // add stuff here as needed
-
     return cv;
 }
 
 void
 cv_destroy(struct cv *cv) {
     assert(cv != NULL);
-
-    // add stuff here as needed
-
+    int spl;
+    spl = splhigh();
     thread_wakeup(cv);
     kfree(cv->name);
     kfree(cv);
+    splx(spl);
 }
 
 void
@@ -201,9 +215,7 @@ cv_wait(struct cv *cv, struct lock *lock) {
     assert(lock != NULL);
     spl = splhigh();
     lock_release(lock);
-
     thread_sleep(cv);
-
     lock_acquire(lock);
     splx(spl);
 }
@@ -213,11 +225,12 @@ cv_signal(struct cv *cv, struct lock *lock) {
     // Write this
     (void) cv; // suppress warning until code gets written
     (void) lock; // suppress warning until code gets written
-    
+    int spl;
     assert(cv != NULL);
     assert(lock != NULL);
-
+    spl = splhigh();
     single_thread_wakeup(cv);
+    splx(spl);
 }
 
 void

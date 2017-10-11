@@ -18,6 +18,7 @@
 #include <lib.h>
 #include <test.h>
 #include <thread.h>
+#include <synch.h>
 
 
 /*
@@ -39,27 +40,32 @@
  *
  */
 
-static const char *directions[] = { "N", "E", "S", "W" };
+static const char *directions[] = {"N", "E", "S", "W"};
 
 static const char *msgs[] = {
-        "approaching:",
-        "region1:    ",
-        "region2:    ",
-        "region3:    ",
-        "leaving:    "
+    "approaching:",
+    "region1:    ",
+    "region2:    ",
+    "region3:    ",
+    "leaving:    "
 };
 
 /* use these constants for the first parameter of message */
-enum { APPROACHING, REGION1, REGION2, REGION3, LEAVING };
+enum {
+    APPROACHING, REGION1, REGION2, REGION3, LEAVING
+};
+struct lock *NW;
+struct lock *NE;
+struct lock *SW;
+struct lock *SE;
 
 static void
-message(int msg_nr, int carnumber, int cardirection, int destdirection)
-{
-        kprintf("%s car = %2d, direction = %s, destination = %s\n",
-                msgs[msg_nr], carnumber,
-                directions[cardirection], directions[destdirection]);
+message(int msg_nr, int carnumber, int cardirection, int destdirection) {
+    kprintf("%s car = %2d, direction = %s, destination = %s\n",
+            msgs[msg_nr], carnumber,
+            directions[cardirection], directions[destdirection]);
 }
- 
+
 /*
  * gostraight()
  *
@@ -80,16 +86,44 @@ message(int msg_nr, int carnumber, int cardirection, int destdirection)
 static
 void
 gostraight(unsigned long cardirection,
-           unsigned long carnumber)
-{
-        /*
-         * Avoid unused variable warnings.
-         */
-        
-        (void) cardirection;
-        (void) carnumber;
-}
+        unsigned long carnumber) {
+    /*
+     * Avoid unused variable warnings.
+     */
 
+    (void) cardirection;
+    (void) carnumber;
+//     int destdirection;
+//    destdirection = cardirection + 2;
+//    if (destdirection > 4) {
+//        destdirection = destdirection - 4;
+//    }
+//
+//    if (cardirection == 1) {
+//        lock_acquire(NW);
+//    } else if (cardirection == 2) {
+//        lock_acquire(NE);
+//
+//    } else if (cardirection == 3) {
+//        lock_acquire(SE);
+//
+//    } else if (cardirection == 4) {
+//        lock_acquire(SW);
+//    }
+//    message(1, carnumber, cardirection, destdirection);
+//    message(4, carnumber, cardirection, destdirection);
+//    if (cardirection == 1) {
+//        lock_release(NW);
+//    } else if (cardirection == 2) {
+//        lock_release(NE);
+//
+//    } else if (cardirection == 3) {
+//        lock_release(SE);
+//
+//    } else if (cardirection == 4) {
+//        lock_release(SW);
+//    }
+}
 
 /*
  * turnleft()
@@ -111,16 +145,14 @@ gostraight(unsigned long cardirection,
 static
 void
 turnleft(unsigned long cardirection,
-         unsigned long carnumber)
-{
-        /*
-         * Avoid unused variable warnings.
-         */
+        unsigned long carnumber) {
+    /*
+     * Avoid unused variable warnings.
+     */
 
-        (void) cardirection;
-        (void) carnumber;
+    (void) cardirection;
+    (void) carnumber;
 }
-
 
 /*
  * turnright()
@@ -142,16 +174,44 @@ turnleft(unsigned long cardirection,
 static
 void
 turnright(unsigned long cardirection,
-          unsigned long carnumber)
-{
-        /*
-         * Avoid unused variable warnings.
-         */
+        unsigned long carnumber) {
+    /*
+     * Avoid unused variable warnings.
+     */
 
-        (void) cardirection;
-        (void) carnumber;
+    (void) cardirection;
+    (void) carnumber;
+    int destdirection;
+    destdirection = cardirection + 3;
+    if (destdirection > 4) {
+        destdirection = destdirection - 4;
+    }
+
+    if (cardirection == 1) {
+        lock_acquire(NW);
+    } else if (cardirection == 2) {
+        lock_acquire(NE);
+
+    } else if (cardirection == 3) {
+        lock_acquire(SE);
+
+    } else if (cardirection == 4) {
+        lock_acquire(SW);
+    }
+    message(1, carnumber, cardirection, destdirection);
+    message(4, carnumber, cardirection, destdirection);
+    if (cardirection == 1) {
+        lock_release(NW);
+    } else if (cardirection == 2) {
+        lock_release(NE);
+
+    } else if (cardirection == 3) {
+        lock_release(SE);
+
+    } else if (cardirection == 4) {
+        lock_release(SW);
+    }
 }
-
 
 /*
  * approachintersection()
@@ -172,31 +232,44 @@ turnright(unsigned long cardirection,
  *      or going straight should be done by calling one of the functions
  *      above.
  */
- 
+
 static
 void
 approachintersection(void * unusedpointer,
-                     unsigned long carnumber)
-{
-        int cardirection;
+        unsigned long carnumber) {
+    int cardirection;
+    int carturn;
+    int destdirection;
+    /*
+     * Avoid unused variable and function warnings.
+     */
 
-        /*
-         * Avoid unused variable and function warnings.
-         */
+    (void) unusedpointer;
+    (void) carnumber;
+    (void) gostraight;
+    (void) turnleft;
+    (void) turnright;
 
-        (void) unusedpointer;
-        (void) carnumber;
-	(void) gostraight;
-	(void) turnleft;
-	(void) turnright;
+    /*
+     * cardirection is set randomly.
+     */
 
-        /*
-         * cardirection is set randomly.
-         */
+    cardirection = random() % 4;
+    carturn = random() % 3 +1;
+    destdirection = cardirection + carturn;
+    if (destdirection > 3) {
+        destdirection = destdirection - 4;
+    }
 
-        cardirection = random() % 4;
+    message(0, carnumber, cardirection, destdirection);
+    if (carturn == 1) {
+        turnleft(cardirection, carnumber);
+    } else if (carturn == 2) {
+        gostraight(cardirection, carnumber);
+    } else if (carturn == 3) {
+        turnright(cardirection, carnumber);
+    }
 }
-
 
 /*
  * createcars()
@@ -215,41 +288,49 @@ approachintersection(void * unusedpointer,
 
 int
 createcars(int nargs,
-           char ** args)
-{
-        int index, error;
+        char ** args) {
+    int index, error;
+
+    /*
+     * Avoid unused variable warnings.
+     */
+
+    NE = lock_create("NE");
+    NW = lock_create("NW");
+    SE = lock_create("SE");
+    SW = lock_create("SW");
+
+
+    (void) nargs;
+    (void) args;
+
+    /*
+     * Start NCARS approachintersection() threads.
+     */
+
+    for (index = 0; index < NCARS; index++) {
+
+        error = thread_fork("approachintersection thread",
+                NULL,
+                index,
+                approachintersection,
+                NULL
+                );
 
         /*
-         * Avoid unused variable warnings.
+         * panic() on error.
          */
 
-        (void) nargs;
-        (void) args;
+        if (error) {
 
-        /*
-         * Start NCARS approachintersection() threads.
-         */
-
-        for (index = 0; index < NCARS; index++) {
-
-                error = thread_fork("approachintersection thread",
-                                    NULL,
-                                    index,
-                                    approachintersection,
-                                    NULL
-                                    );
-
-                /*
-                 * panic() on error.
-                 */
-
-                if (error) {
-                        
-                        panic("approachintersection: thread_fork failed: %s\n",
-                              strerror(error)
-                              );
-                }
+            panic("approachintersection: thread_fork failed: %s\n",
+                    strerror(error)
+                    );
         }
-
-        return 0;
+    }
+    lock_destroy(NW);
+    lock_destroy(NE);
+    lock_destroy(SW);
+    lock_destroy(SE);
+    return 0;
 }
