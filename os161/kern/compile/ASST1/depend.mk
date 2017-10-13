@@ -111,7 +111,7 @@ catlock.o: ../../asst1/catlock.c ../../include/types.h machine/types.h \
 catsem.o: ../../asst1/catsem.c ../../include/types.h machine/types.h \
   ../../include/kern/types.h machine/ktypes.h ../../include/lib.h \
   machine/setjmp.h ../../include/test.h ../../include/thread.h \
-  machine/pcb.h
+  machine/pcb.h ../../include/synch.h
 sfs_vnode.o: ../../fs/sfs/sfs_vnode.c ../../include/types.h \
   machine/types.h ../../include/kern/types.h machine/ktypes.h \
   ../../include/lib.h machine/setjmp.h ../../include/synch.h \
@@ -134,7 +134,8 @@ dumbvm.o: ../../arch/mips/mips/dumbvm.c ../../include/types.h \
 stoplight.o: ../../asst1/stoplight.c ../../include/types.h \
   machine/types.h ../../include/kern/types.h machine/ktypes.h \
   ../../include/lib.h machine/setjmp.h ../../include/test.h \
-  ../../include/thread.h machine/pcb.h ../../include/synch.h
+  ../../include/thread.h machine/pcb.h ../../include/synch.h \
+  ../../include/queue.h ../../include/curthread.h
 sfs_io.o: ../../fs/sfs/sfs_io.c ../../include/types.h machine/types.h \
   ../../include/kern/types.h machine/ktypes.h ../../include/kern/errno.h \
   ../../include/lib.h machine/setjmp.h ../../include/uio.h \
@@ -293,7 +294,8 @@ hardclock.o: ../../thread/hardclock.c ../../include/types.h \
 synch.o: ../../thread/synch.c ../../include/types.h machine/types.h \
   ../../include/kern/types.h machine/ktypes.h ../../include/lib.h \
   machine/setjmp.h ../../include/synch.h ../../include/thread.h \
-  machine/pcb.h ../../include/curthread.h machine/spl.h
+  machine/pcb.h ../../include/curthread.h ../../include/queue.h \
+  machine/spl.h
 scheduler.o: ../../thread/scheduler.c ../../include/types.h \
   machine/types.h ../../include/kern/types.h machine/ktypes.h \
   ../../include/lib.h machine/setjmp.h ../../include/scheduler.h \

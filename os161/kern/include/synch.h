@@ -91,6 +91,7 @@ void         lock_destroy(struct lock *);
 
 struct cv {
 	char *name;
+        int ready;
 	// add what you need here
 	// (don't forget to mark things volatile as needed)
 };

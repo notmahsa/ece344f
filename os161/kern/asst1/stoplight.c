@@ -19,6 +19,8 @@
 #include <test.h>
 #include <thread.h>
 #include <synch.h>
+#include <queue.h>
+#include <curthread.h>
 
 
 /*
@@ -59,6 +61,13 @@ struct lock *NE;
 struct lock *SW;
 struct lock *SE;
 
+struct queue * Nq;
+struct queue * Eq;
+struct queue * Sq;
+struct queue * Wq;
+
+struct cv * cv;
+
 static void
 message(int msg_nr, int carnumber, int cardirection, int destdirection) {
     kprintf("%s car = %2d, direction = %s, destination = %s\n",
@@ -85,6 +94,33 @@ message(int msg_nr, int carnumber, int cardirection, int destdirection) {
 
 static
 void
+can_go_ahead() {
+    //    int avail = 0;
+    //    if (SW->available == 1)
+    //        avail++;
+    //    if (NE->available == 1)
+    //        avail++;
+    //    if (SE->available == 1)
+    //        avail++;
+    //    if (NW->available == 1)
+    //        avail++;
+    //    
+    //    while (avail < 2){
+    //        avail = 0;
+    //        if (SW->available == 1)
+    //            avail++;
+    //        if (NE->available == 1)
+    //            avail++;
+    //        if (SE->available == 1)
+    //            avail++;
+    //        if (NW->available == 1)
+    //            avail++;
+    //    }
+    return;
+}
+
+static
+void
 gostraight(unsigned long cardirection,
         unsigned long carnumber) {
     /*
@@ -93,36 +129,60 @@ gostraight(unsigned long cardirection,
 
     (void) cardirection;
     (void) carnumber;
-//     int destdirection;
-//    destdirection = cardirection + 2;
-//    if (destdirection > 4) {
-//        destdirection = destdirection - 4;
-//    }
-//
-//    if (cardirection == 1) {
-//        lock_acquire(NW);
-//    } else if (cardirection == 2) {
-//        lock_acquire(NE);
-//
-//    } else if (cardirection == 3) {
-//        lock_acquire(SE);
-//
-//    } else if (cardirection == 4) {
-//        lock_acquire(SW);
-//    }
-//    message(1, carnumber, cardirection, destdirection);
-//    message(4, carnumber, cardirection, destdirection);
-//    if (cardirection == 1) {
-//        lock_release(NW);
-//    } else if (cardirection == 2) {
-//        lock_release(NE);
-//
-//    } else if (cardirection == 3) {
-//        lock_release(SE);
-//
-//    } else if (cardirection == 4) {
-//        lock_release(SW);
-//    }
+    int destdirection;
+    destdirection = cardirection + 2;
+    if (destdirection > 3) {
+        destdirection = destdirection - 4;
+    }
+
+    if (cardirection == 0) {
+        lock_release(NE);
+        can_go_ahead();
+        lock_acquire(SW);
+        can_go_ahead();
+        lock_acquire(NW);
+        message(1, carnumber, cardirection, destdirection);
+        message(2, carnumber, cardirection, destdirection);
+        message(4, carnumber, cardirection, destdirection);
+        lock_release(NW);
+        lock_release(SW);
+
+
+    } else if (cardirection == 1) {
+        can_go_ahead();
+        lock_acquire(NE);
+        can_go_ahead();
+        lock_acquire(NW);
+        message(1, carnumber, cardirection, destdirection);
+        message(2, carnumber, cardirection, destdirection);
+        message(4, carnumber, cardirection, destdirection);
+        lock_release(NW);
+        lock_release(NE);
+
+    } else if (cardirection == 2) {
+        can_go_ahead();
+        lock_acquire(NE);
+        can_go_ahead();
+        lock_acquire(SE);
+        message(1, carnumber, cardirection, destdirection);
+        message(2, carnumber, cardirection, destdirection);
+        message(4, carnumber, cardirection, destdirection);
+        lock_release(SE);
+        lock_release(NE);
+
+    } else if (cardirection == 3) {
+        lock_release(NE);
+        can_go_ahead();
+        lock_acquire(SE);
+        can_go_ahead();
+        lock_acquire(SW);
+        message(1, carnumber, cardirection, destdirection);
+        message(2, carnumber, cardirection, destdirection);
+        message(4, carnumber, cardirection, destdirection);
+        lock_release(SW);
+        lock_release(SE);
+    }
+
 }
 
 /*
@@ -152,6 +212,71 @@ turnleft(unsigned long cardirection,
 
     (void) cardirection;
     (void) carnumber;
+    int destdirection;
+    destdirection = cardirection + 1;
+    if (destdirection > 3) {
+        destdirection = destdirection - 4;
+    }
+
+
+    if (cardirection == 0) {
+        can_go_ahead();
+        lock_acquire(SE);
+        can_go_ahead();
+        lock_acquire(SW);
+        lock_acquire(NW);
+        lock_release(NE);
+        message(1, carnumber, cardirection, destdirection);
+        message(2, carnumber, cardirection, destdirection);
+        message(3, carnumber, cardirection, destdirection);
+        message(4, carnumber, cardirection, destdirection);
+        lock_release(NW);
+        lock_release(SW);
+        lock_release(SE);
+
+
+    } else if (cardirection == 1) {
+        can_go_ahead();
+        lock_acquire(NE);
+        can_go_ahead();
+        lock_acquire(SW);
+        lock_acquire(NW);
+        message(1, carnumber, cardirection, destdirection);
+        message(2, carnumber, cardirection, destdirection);
+        message(3, carnumber, cardirection, destdirection);
+        message(4, carnumber, cardirection, destdirection);
+        lock_release(NW);
+        lock_release(NE);
+        lock_release(SW);
+
+    } else if (cardirection == 2) {
+        can_go_ahead();
+        lock_acquire(NE);
+        can_go_ahead();
+        lock_acquire(SE);
+        lock_acquire(NW);
+        message(1, carnumber, cardirection, destdirection);
+        message(2, carnumber, cardirection, destdirection);
+        message(3, carnumber, cardirection, destdirection);
+        message(4, carnumber, cardirection, destdirection);
+        lock_release(SE);
+        lock_release(NE);
+        lock_release(NW);
+
+    } else if (cardirection == 3) {
+        can_go_ahead();
+        lock_acquire(NE);
+        can_go_ahead();
+        lock_acquire(SE);
+        lock_acquire(SW);
+        message(1, carnumber, cardirection, destdirection);
+        message(2, carnumber, cardirection, destdirection);
+        message(3, carnumber, cardirection, destdirection);
+        message(4, carnumber, cardirection, destdirection);
+        lock_release(SW);
+        lock_release(SE);
+        lock_release(NE);
+    }
 }
 
 /*
@@ -183,34 +308,71 @@ turnright(unsigned long cardirection,
     (void) carnumber;
     int destdirection;
     destdirection = cardirection + 3;
-    if (destdirection > 4) {
+    if (destdirection > 3) {
         destdirection = destdirection - 4;
     }
 
-    if (cardirection == 1) {
+
+    if (cardirection == 0) {
+        lock_release(NE);
         lock_acquire(NW);
-    } else if (cardirection == 2) {
-        lock_acquire(NE);
-
-    } else if (cardirection == 3) {
-        lock_acquire(SE);
-
-    } else if (cardirection == 4) {
-        lock_acquire(SW);
-    }
-    message(1, carnumber, cardirection, destdirection);
-    message(4, carnumber, cardirection, destdirection);
-    if (cardirection == 1) {
+        message(1, carnumber, cardirection, destdirection);
+        message(4, carnumber, cardirection, destdirection);
         lock_release(NW);
+    } else if (cardirection == 1) {
+        lock_acquire(NE);
+        message(1, carnumber, cardirection, destdirection);
+        message(4, carnumber, cardirection, destdirection);
+        lock_release(NE);
     } else if (cardirection == 2) {
         lock_release(NE);
-
-    } else if (cardirection == 3) {
+        lock_acquire(SE);
+        message(1, carnumber, cardirection, destdirection);
+        message(4, carnumber, cardirection, destdirection);
         lock_release(SE);
-
-    } else if (cardirection == 4) {
+    } else if (cardirection == 3) {
+        lock_release(NE);
+        lock_acquire(SW);
+        message(1, carnumber, cardirection, destdirection);
+        message(4, carnumber, cardirection, destdirection);
         lock_release(SW);
     }
+}
+
+static
+void
+callThread(struct cv * cv, struct thread * thread) {
+    
+    if (thread == q_getguy(Nq, q_getstart(Nq))) {
+        if (!q_empty(Nq))
+            q_remhead(Nq);
+        cv_broadcast(cv, NE);
+    } else if (thread == q_getguy(Eq, q_getstart(Eq))) {
+        if (!q_empty(Eq))
+            q_remhead(Eq);
+        cv_broadcast(cv, NE);
+    } else if (thread == q_getguy(Wq, q_getstart(Wq))) {
+        if (!q_empty(Wq))
+            q_remhead(Wq);
+        cv_broadcast(cv, NE);
+    } else if (thread == q_getguy(Sq, q_getstart(Sq))) {
+        if (!q_empty(Sq))
+            q_remhead(Sq);
+        cv_broadcast(cv, NE);
+    }
+}
+
+static
+int
+ThreadOnTop(struct thread * thread) {
+    if (thread == q_getguy(Nq, q_getstart(Nq)) || thread == q_getguy(Eq, q_getstart(Eq)) ||
+            thread == q_getguy(Wq, q_getstart(Wq)) || thread == q_getguy(Sq, q_getstart(Sq))) {
+        kprintf("\nLOL YAH!");
+        return 1;
+    }
+    kprintf("\nKEK NO!");
+    return 0;
+
 }
 
 /*
@@ -255,13 +417,40 @@ approachintersection(void * unusedpointer,
      */
 
     cardirection = random() % 4;
-    carturn = random() % 3 +1;
+    carturn = random() % 3 + 1;
     destdirection = cardirection + carturn;
     if (destdirection > 3) {
-        destdirection = destdirection - 4;
+        destdirection -= 4;
+    }
+
+    if (cardirection == 0) {
+        q_addtail(Nq, curthread);
+        //kprintf("\n N %d", q_getsize(Nq));
+    } else if (cardirection == 1) {
+        q_addtail(Eq, curthread);
+        //kprintf("\n E %d", q_getsize(Eq));
+    } else if (cardirection == 2) {
+        q_addtail(Sq, curthread);
+        //kprintf("\n S %d", q_getsize(Sq));
+    } else if (cardirection == 3) {
+        q_addtail(Wq, curthread);
+        //kprintf("\n W %d", q_getsize(Wq));
+    }
+
+    while (ThreadOnTop(curthread) == 0) {
+        if (cardirection == 0) {
+            cv_wait(cv, NE);
+        } else if (cardirection == 1) {
+            cv_wait(cv, NE);
+        } else if (cardirection == 2) {
+            cv_wait(cv, NE);
+        } else if (cardirection == 3) {
+            cv_wait(cv, NE);
+        }
     }
 
     message(0, carnumber, cardirection, destdirection);
+
     if (carturn == 1) {
         turnleft(cardirection, carnumber);
     } else if (carturn == 2) {
@@ -269,6 +458,8 @@ approachintersection(void * unusedpointer,
     } else if (carturn == 3) {
         turnright(cardirection, carnumber);
     }
+
+    callThread(cv, curthread);
 }
 
 /*
@@ -299,7 +490,13 @@ createcars(int nargs,
     NW = lock_create("NW");
     SE = lock_create("SE");
     SW = lock_create("SW");
-
+    
+    Nq = q_create(NCARS);
+    Sq = q_create(NCARS);
+    Wq = q_create(NCARS);
+    Eq = q_create(NCARS);
+    
+    cv = cv_create("stoplight");
 
     (void) nargs;
     (void) args;
@@ -328,9 +525,19 @@ createcars(int nargs,
                     );
         }
     }
+    while (!q_empty(Nq) || !q_empty(Eq) || !q_empty(Sq) || !q_empty(Wq)){
+        continue;
+    }
     lock_destroy(NW);
     lock_destroy(NE);
     lock_destroy(SW);
     lock_destroy(SE);
+    cv_destroy(cv);
+    q_destroy(Nq);
+    q_destroy(Eq);
+    q_destroy(Sq);
+    q_destroy(Wq);
+     
+
     return 0;
 }

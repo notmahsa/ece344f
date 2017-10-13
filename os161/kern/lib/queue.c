@@ -91,7 +91,6 @@ int
 q_addtail(struct queue *q, void *ptr)
 {
 	int nextnext, result;
-
 	assert(q->size > 0);
 
 	nextnext = (q->nextwrite+1) % q->size;
