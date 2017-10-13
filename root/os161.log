@@ -1,0 +1,151 @@
+sys161: System/161 release 1.14, compiled Jan 13 2015 13:55:47
+
+OS/161 base system version 1.11
+Copyright (c) 2000, 2001, 2002, 2003
+   President and Fellows of Harvard College.  All rights reserved.
+
+Put-your-group-name-here's system version 0 (ASST1 #129)
+
+Cpu is MIPS r2000/r3000
+336k physical memory available
+Device probe...
+lamebus0 (system main bus)
+emu0 at lamebus0
+ltrace0 at lamebus0
+ltimer0 at lamebus0
+hardclock on ltimer0 (10000 hz)
+beep0 at ltimer0
+rtclock0 at ltimer0
+lrandom0 at lamebus0
+random0 at lrandom0
+lhd0 at lamebus0
+lhd1 at lamebus0
+lser0 at lamebus0
+con0 at lser0
+pseudorand0 (virtual)
+
+Hello World
+OS/161 kernel [? for menu]: 1c
+1c
+
+LOL YAH!approaching: car =  0, direction = W, destination = E
+region1:     car =  0, direction = W, destination = E
+region2:     car =  0, direction = W, destination = E
+
+KEK NO!
+LOL YAH!leaving:     car =  0, direction = W, destination = E
+
+KEK NO!approaching: car = 10, direction = S, destination = W
+
+LOL YAH!
+LOL YAH!
+KEK NO!
+KEK NO!
+LOL YAH!
+KEK NO!
+KEK NO!
+KEK NO!approaching: car =  6, direction = N, destination = W
+approaching: car =  7, direction = E, destination = W
+
+KEK NO!
+KEK NO!approaching: car =  3, direction = W, destination = N
+
+KEK NO!
+KEK NO!region1:     car =  6, direction = N, destination = W
+
+KEK NO!
+KEK NO!
+KEK NO!region1:     car =  3, direction = W, destination = N
+
+KEK NO!leaving:     car =  6, direction = N, destination = W
+region2:     car =  3, direction = W, destination = N
+region3:     car =  3, direction = W, destination = N
+leaving:     car =  3, direction = W, destination = N
+
+KEK NO!region1:     car = 10, direction = S, destination = W
+region2:     car = 10, direction = S, destination = W
+region3:     car = 10, direction = S, destination = W
+leaving:     car = 10, direction = S, destination = W
+region1:     car =  7, direction = E, destination = W
+region2:     car =  7, direction = E, destination = W
+leaving:     car =  7, direction = E, destination = W
+
+LOL YAH!approaching: car =  2, direction = N, destination = S
+
+LOL YAH!region1:     car =  2, direction = N, destination = S
+approaching: car =  1, direction = W, destination = E
+region2:     car =  2, direction = N, destination = S
+
+KEK NO!leaving:     car =  2, direction = N, destination = S
+
+LOL YAH!approaching: car = 11, direction = E, destination = N
+region1:     car =  1, direction = W, destination = E
+region1:     car = 11, direction = E, destination = N
+region2:     car =  1, direction = W, destination = E
+leaving:     car = 11, direction = E, destination = N
+leaving:     car =  1, direction = W, destination = E
+
+LOL YAH!approaching: car = 13, direction = N, destination = E
+
+KEK NO!region1:     car = 13, direction = N, destination = E
+
+KEK NO!region2:     car = 13, direction = N, destination = E
+
+KEK NO!region3:     car = 13, direction = N, destination = E
+
+LOL YAH!leaving:     car = 13, direction = N, destination = E
+approaching: car =  9, direction = E, destination = S
+region1:     car =  9, direction = E, destination = S
+region2:     car =  9, direction = E, destination = S
+region3:     car =  9, direction = E, destination = S
+leaving:     car =  9, direction = E, destination = S
+
+LOL YAH!approaching: car =  4, direction = S, destination = N
+region1:     car =  4, direction = S, destination = N
+region2:     car =  4, direction = S, destination = N
+leaving:     car =  4, direction = S, destination = N
+
+LOL YAH!approaching: car = 14, direction = E, destination = N
+region1:     car = 14, direction = E, destination = N
+leaving:     car = 14, direction = E, destination = N
+
+KEK NO!
+LOL YAH!approaching: car = 12, direction = N, destination = E
+
+KEK NO!region1:     car = 12, direction = N, destination = E
+
+KEK NO!
+LOL YAH!approaching: car =  5, direction = W, destination = S
+region2:     car = 12, direction = N, destination = E
+
+KEK NO!region3:     car = 12, direction = N, destination = E
+
+KEK NO!
+LOL YAH!leaving:     car = 12, direction = N, destination = E
+approaching: car = 15, direction = S, destination = W
+region1:     car =  5, direction = W, destination = S
+region1:     car = 15, direction = S, destination = W
+leaving:     car =  5, direction = W, destination = S
+region2:     car = 15, direction = S, destination = W
+region3:     car = 15, direction = S, destination = W
+leaving:     car = 15, direction = S, destination = W
+
+LOL YAH!approaching: car = 17, direction = N, destination = E
+
+KEK NO!region1:     car = 17, direction = N, destination = E
+
+KEK NO!region2:     car = 17, direction = N, destination = E
+
+LOL YAH!region3:     car = 17, direction = N, destination = E
+approaching: car =  8, direction = W, destination = E
+leaving:     car = 17, direction = N, destination = E
+
+KEK NO!region1:     car =  8, direction = W, destination = E
+
+KEK NO!region2:     car =  8, direction = W, destination = E
+
+KEK NO!leaving:     car =  8, direction = W, destination = E
+
+KEK NO!
+KEK NO!
+KEK NO!
